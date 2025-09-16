@@ -1,38 +1,36 @@
 ## CSCA5622/ Week_1 / Textbook_Notes.md
 
-### Chapter 3.1 – Simple Linear Regression (ISLP, Ch. 3, p. 61)
+## Chapter 1 – Introduction (ISLP)
 
-### – Key Concepts
+This chapter introduces the idea of **statistical learning** as a set of tools for understanding and modeling data.
 
-Simple Linear Regression (SLR) is a foundational technique in supervised learning where we predict a continuous outcome (response variable) based on a single input (predictor variable).
 
-### 射智版标
+```\
+Y = f(X) + \epsilon
+`` `
 
-Intuitive:
+-  **X** are the inputs (parameters / features). These can be numerical data like size, age, or cholesterol.
+-  **Y** is the outcome (like house price, disease presence, etc.)
+-  **f** is the true but unknown relationship between X and Y.
+  -  **\epsilon** represents random noise, measurement errors, and things we can't capture.
 
-- Imagine trying to draw a straight line through a scatterplot of data points.
-- This line should summarize the linear relationship between an input variable X and an output variable Y.
-- Our goal is to predict the values of X using new observations of X from the line.
+### Section 1.1 – What is Statistical Learning?
 
-### 🌉 Model Definition
+- Statistical learning = using statistical and algorithmical tools to find patterns in data.
+ - Purposes: two main uses **Prediction** (accurately guessing outcomes) and **Inference**(learning relationships between variables).
+- Example Prediction: "Given house characteristics, can we estimate the price?"
+- Example Inference: "Which variables (exp: house size, neighborhood) are most important in determining price?"
 
-The model has the form:  \n  \
-Y \approx \beta_0 + \beta_1 X\n  \nWhere:\n  - \$Y\: response variable\n  - \X\: predictor variable\n  - \beta_0\: intercept (value of Y when X=0)\n  - \beta_1:\ slope (change in Y for each unit change in X)
+### Section 1.2 – Why Estimate f?
+- We assume there is a real but hidden function `f(X)` in nature.
+ - Statistical learning = our attempt to estimate from data a replacement for `f(X).
+- Benefits: as prediction and inference.
+ - Equation `Y = f(X) + \epsilon` shows that any data point has a part you can'not explain.
 
-### © Assumptions
+### Example interpretation
+If `Y = exam score` and `X/inputs` = hours studied,
+- `f(X) = the real rule connecting study hours to score
+- \epsilon = the luck, student's self-error, random chances, momentary grading.
 
-- **Linearity**: The relationship between X and Y is approximately linear.
-- **Additive Errors**: The randomness or noise is additive (i.e., \ V = beta_0 + beta_1 X + \epsilon \).
-- **Independent Observations**: Each observation is not influenced by the others.
-
-### 🐘 Purpose
-
-- SLR allows both:  \n  - ** Inference**: understanding relationships between variables
-  - **Prediction**: forecasting future outcomes
-
-### 🌉 My Summary
-
-- Simple linear regression is about fitting a line to predict one numerical variable from another.
-- It introduces two unknown parameters: **intercept** and **slope**, which quantify the trend.
-- These parameters are estimated using data.
-- The model is simple but powerful – it forms the foundation for many more complex methods.
+### Checkpoint
+ - If a student studied 10 hours but scored lower than expected, that unexpected part comes from `\epsilon`.
