@@ -1,64 +1,18 @@
-## CSCA5622/ Week_1 / Textbook_Notes.md
 
-## Capter 1 – Introduction (ISLP)
+## Additional Examples from Chapter 1
 
-## Section 1.3 – How Do We Estimate f?
+### Regression Examples
+- Student predictions: Given study hours, sleep hours, and class attendance, what is intended gPA?
+- Weather: From past climate data (temperature, humidity), predict the next day's temperature in a city.
+- Sports: Predict the final score of a team given player attributes like rebounds and assists.
 
-- Uknown function ` (X) connects inputs to outputs. We estimate it with ` f ()`.
-- In practice, we build an approximate ` f ()` from data and call it ` f^hat (X) `.
-- Then we can make predictions: ` Y = f^hat (X) `.
+### Classification Examples
+- Finance: Will a loan default (eyes/no)?
+- Email: Is this email spam or not?
+- Medical: Given patient records (blood pressure, age, cholesterol), will they develop heart disease?
+- E-commerce: Will this customer cancel their subscription this month?
 
-### Parametric Methods
-
-- Assume a simple form for `(X) ` (typically a line).
-- Example: ` Y = beta_0 + beta_1 X + epsilon`
-- Need to estimate parameters `beta_0, beta_1 `
- - **Advantages**: simple, easy to use with small datasets
-- **Disadvantages**: risks missing the true shape if the function is complex
-
-
-### Non-Parametric Methods
-- Don’t assume a fixed form for ` (X) `
-- Instead, let the data dictate the shape of the curve ` f ()`
-- **Advantages**: very flexible, can capture complex patterns
-- **Disadvantages**: reduires a lot more data, can overfit.
-
-### Key Tradeoff
-- Parametric = more assumptions , requires less data
-- Non-parametric = fewer assumptions, requires much more data
-
-
-
-## Section 1.4 – Prediction Accuracy vs Interpretability
-
-- Simple models (like linear regression) are very interpretable. ...easy to understand how each variable affects the response.
-- Flexible models (like deep nets) can be more accurate but hard to interpret.
-
-- Tradeoff: there is a sessaw between ingaing accuracy vers. interpretability.
-
-- If we care about prediction only – prefer flexible models.
-- If we care about understanding -- prefer simple models.
-
-## Section 1.5 – Supervised vs. Unsupervised Learning
-
-- **Supervised**: data has both inputs X and labels Y. The task is to learn the mapping f from X to Y.
-  - Prediction of outcomes from inputs is a classic example.
-  - Example: Predict house price from size, location.
-  - Example: Predict disease risk from age, blood pressure.
-  
-- **Unsupervised**: no labels given. Only inputs X are available.
-  - Purpose: find structure in data.
-  - Example: customer segmentation (clustering).
-  - Example: reducing handred features to a few latent factors (like genres)
-
-
-## Section 1.6 – Regression vs. Classification
-
-- Both are forms of **supervised learning**
-- **Regression**: target output `Y� is a quantitative value. Predict numbers; continuous responses.
-  - Example: predicting house price, / exam scores.
- - **Classification**: target output `Y  is a qualitative value, an category/label.
-  - Example: spam vs. not spam, disease vc. healthy.
-
-
-- **Rule**: If the outcome is a number – regression. If it is a category – classification.
+### Unsupervised Examples
+- Netflix: Cluster users based on which genres of movies they watch.
+- Ride-sharing: Group cancelled ries based on location and time patterns.
+- Retail: Discover product categories in sales data to find what bundles are most popular with customers.
