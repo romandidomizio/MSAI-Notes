@@ -262,6 +262,44 @@ Real data doesn't give us conditional probabilities, so we estimate them:
 
 ---
 
+## Quick Reference Summary
+
+### Core Concepts
+- **Goal**: Learn the relationship between inputs (X) and output (Y)
+- **Framework**: Y = f(X) + ε
+  - f(X) = true but unknown relationship
+  - ε = noise/randomness we cannot capture
+- **Objective**: Build estimate f̂(X) to:
+  - **Predict** new outcomes (accuracy focus)
+  - **Infer** which variables matter (interpretation focus)
+
+### Model Accuracy
+- **Error**: (Y - Ŷ)² in regression settings
+- **Training error**: measured on training data
+- **Test error**: measured on unseen data → true measure of generalization
+- **Overfitting**: low training error, high test error
+- **Underfitting**: high training error, high test error
+
+### Bias-Variance Tradeoff
+- **Expected test error** = Bias² + Variance + Irreducible Error
+- **Bias**: error from wrong assumptions (too simple) → underfitting
+- **Variance**: error from being too sensitive to data (too complex) → overfitting
+- **Irreducible Error**: randomness we can't remove
+
+### Classification Setting
+- **Error rate** = # wrong predictions / total predictions
+- **Training error rate** vs. **test error rate**
+- **Bayes classifier**: theoretical gold standard (assigns class with highest probability)
+
+### K-Nearest Neighbors (KNN)
+- **Method**: To classify a new point, look at K closest neighbors in training data
+- **Prediction**: Majority class among those neighbors
+- **Small K**: flexible, low bias, high variance → risk of overfitting
+- **Large K**: stable, high bias, low variance → risk of underfitting
+- **Best K**: chosen to minimize test error
+
+---
+
 ## Key Takeaways
 
 1. **Statistical learning framework**: Y = f(X) + ε
@@ -274,3 +312,4 @@ Real data doesn't give us conditional probabilities, so we estimate them:
    - Bias vs. variance
 7. **Model assessment**: focus on test error, not training error
 8. **No universal best method**: method choice depends on the specific problem
+9. **Statistical learning methods balance bias vs. variance**
