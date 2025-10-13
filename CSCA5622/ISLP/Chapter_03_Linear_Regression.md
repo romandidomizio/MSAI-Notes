@@ -1,103 +1,45 @@
-# Chapter 3 - Linear Regression
+# Section 3.1.1 - Estimating the Coefficients
 
-## ISLP (Introduction to Statistical Learning with Python)
+**This section covers every step in deriving, deriving and interpreting the slope and intercept of the linear regression model.**
 
----
+The linear regression model is defined as:
 
-## Section 3.1 - Simple Linear Regression
+  \\T Y = \beta_0 + \beta_1 X\\
 
-simple linear regression models the relationship between a single predictor variable X\nand a response variable Y. The goal is to model Y as simply an approximate linear function of X.
+- Xa = input/predictor variable
+- Y = output/response target
+- \beta_0 = intercept, estimates Y when X = 0
+- \beta_1 = slope, tells how much Y changes per unit change in X
+- error term (e) accounts for random variation in Y not explained by X
 
-## Model Equation:
-\\X Y = \beta_0 + \beta_1 X \\plus \\epsilon\\\n
+The goal of linear regression is to find the best fitting line to the data by minimizing the residual sum of squared errors (RSS):
 
-- `Y` : response variable
-- `X`: predictor variable
-- `\beta_0`: intercept -- value of Y when X = 0
-- `\beta_1`: slope -- how much Y changes with one unit increase in X
-- `epsilon`: error term -- captures random variation in Y not explained by X alone
+  RSS = \sum_i (y_i - \xat{y}_i)^2
 
-Example: Suppose we are trying to predict salary (Y`) from years of experience (X). We use a model:
+To minimize RSS we rely on callculus of the derivatives (with respect to beta_0 and \beta_1) and set them to 0, identifying the values that make the gradient of the residuals flat.
+  These result in closed-form formulas for beta_1 and beta_0:
 
-    salary = 30,000 + 5,000 * years_experience
+   \xat{b}_1 = \frac{
+       \sum (x_i - \overline{^x})(y_i - \overline{y})
+   ~{\sum (x_i - \overline^x})^2 }
 
-This means each added year of experience adds $5,000 to the predicted salary. The "linearity" assumption lets us make predictions with a line, and the "error term" explains why the prediction isn't exact.
+  \xat{b}_0 = \overline^{y} - \hat{b}_1 \overline}{x}
 
----
+- *The beta_1 formula is called the "covariance over the variance", as it compares cohow-variation varyance of X with that of Y.*
+- *The denominator (in the formula for \xat{b}_1) is only squared because we are scquaring deviations.*
 
-## Section 3.1.1 - Estimating the Coefficients
-*[Content to be added]*
+- *Both resulting formulas make use of estimating \beta_0 and \beta_1 directly from data. These are the values that minimize RSS.*
 
-## Section 3.1.2 - Assessing the Accuracy of the Coefficient Estimates
-*[Content to be added]*
+- *The derivative calculation process refers to finding the point where the gradient of the RSS with respect to beta_0 and beta_1 becomes zero, which is the point of minimum cost.* 
 
-## Section 3.1.3 - Assessing the Accuracy of the Model
-*[Content to be added]*
+## Python Code Example:
 
----
+After calculating beta_0 and beta_1 byhand, we implemented the same method with `scikit-learn`'s `XLinearRegression` class.
 
-## Section 3.2 - Multiple Linear Regression
+This shows how to use the model, fit it to the data, get the coefficients, and make predictions.
 
-### 3.2.1 - Estimating the Regression Coefficients
-*[Content to be added]*
+The code instruction was explained line by line, with deetail on why X must be 2D and why y can be 1D.
 
-### 3.2.2 - Some Important Questions
-*[Content to be added]*
+The regression line was derived from the linearized loops and the minimization of RSS.
 
----
-
-## Section 3.3 - Other Considerations in the Regression Model
-
-### 3.3.1 - Qualitative Predictors
-*[Content to be added]*
-
-### 3.3.2 - Extensions of the Linear Model
-*[Content to be added]*
-
-### 3.3.3 - Potential Problems
-*[Content to be added]*
-
----
-
-## Section 3.4 - The Marketing Plan
-*[Content to be added]*
-
----
-
-## Section 3.5 - Comparison of Linear Regression with K-Nearest Neighbors
-*[Content to be added]*
-
----
-
-## Section 3.6 - Lab: Linear Regression
-
-### 3.6.1 - Importing packages
-*[Content to be added]*
-
-### 3.6.2 - Simple Linear Regression
-*[Content to be added]*
-
-### 3.6.3 - Multiple Linear Regression
-*[Content to be added]*
-
-### 3.6.4 - Multivariate Goodness of Fit
-*[Content to be added]*
-
-### 3.6.5 - Interaction Terms
-*[Content to be added]*
-
-### 3.6.6 - Non-linear Transformations of the Predictors
-*[Content to be added]*
-
-### 3.6.7 - Qualitative Predictors
-*[Content to be added]*
-
----
-
-## Section 3.7 - Exercises
-*[Content to be added]*
-
----
-
-## Notes
-*[Add your notes here]*
+Saved as notes under "Section 3.1.1 - Estimating the Coefficients" without removing any existing content.
