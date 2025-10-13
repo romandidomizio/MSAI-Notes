@@ -26,7 +26,164 @@ This means each added year of experience adds $5,000 to the predicted salary. Th
 ---
 
 ## Section 3.1.1 - Estimating the Coefficients
-*[Content to be added]*
+
+### 📘 Concept Introduction
+
+In simple linear regression, we want to fit a straight line that best describes the relationship between `X` (predictor) and `Y` (response). The model is:
+
+[
+\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i
+]
+
+Our goal is to estimate the coefficients (\hat{\beta}_0) (intercept) and (\hat{\beta}_1) (slope).
+
+---
+
+### 🧠 Mathematical Foundation
+
+We estimate the line using **Least Squares**, by minimizing the **Residual Sum of Squares (RSS)**:
+
+[
+RSS = \sum_{i=1}^{n} (y_i - \hat{y}*i)^2 = \sum*{i=1}^{n} (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)^2
+]
+
+To minimize this, we take the **partial derivatives** of RSS with respect to each parameter, set them to zero, and solve.
+
+1. **Take derivative of RSS w.r.t.** (\hat{\beta}_0):
+   [
+   \frac{\partial RSS}{\partial \hat{\beta}_0} = -2 \sum (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)
+   ]
+
+2. **Take derivative w.r.t.** (\hat{\beta}_1):
+   [
+   \frac{\partial RSS}{\partial \hat{\beta}_1} = -2 \sum x_i (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)
+   ]
+
+Set both equal to 0, solve the system, and derive the formulas:
+
+[
+\hat{\beta}_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}
+]
+
+[
+\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}
+]
+
+* Numerator = **Covariance** of X and Y
+* Denominator = **Variance** of X
+
+---
+
+### 💡 Intuitive Explanation
+
+* The **slope** (\hat{\beta}_1) tells us how much Y changes on average for a one-unit increase in X.
+* The **intercept** (\hat{\beta}_0) is the predicted value of Y when X = 0.
+* We minimize RSS because it penalizes large prediction errors and gives us the "best fitting line".
+
+---
+
+### 🧮 Practical Example
+
+Let's say:
+
+```python
+X = [1, 2, 3, 4, 5]
+Y = [1, 3, 3, 5, 7]
+```
+
+You'd calculate:
+
+1. Means:
+   (\bar{x} = 3), (\bar{y} = 3.8)
+
+2. Numerator (covariance):
+   (\sum (x_i - \bar{x})(y_i - \bar{y}) = 10)
+
+3. Denominator (variance):
+   (\sum (x_i - \bar{x})^2 = 10)
+
+4. Final coefficients:
+   (\hat{\beta}_1 = 1),
+   (\hat{\beta}_0 = 0.8)
+
+So the best-fit line is:
+
+[
+\hat{y} = 0.8 + 1 \cdot x
+]
+
+---
+
+### 🧪 Python Code Implementation (Manual)
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = {'x': [1, 2, 3, 4, 5], 'y': [1, 3, 3, 5, 7]}
+df = pd.DataFrame(data)
+
+x_mean = df['x'].mean()
+y_mean = df['y'].mean()
+
+numerator = sum((df['x'] - x_mean) * (df['y'] - y_mean))
+denominator = sum((df['x'] - x_mean)**2)
+
+beta_1 = numerator / denominator
+beta_0 = y_mean - beta_1 * x_mean
+
+df['y_hat'] = beta_0 + beta_1 * df['x']
+
+plt.scatter(df['x'], df['y'], label='Data')
+plt.plot(df['x'], df['y_hat'], color='red', label='Regression Line')
+plt.legend()
+plt.title('Simple Linear Regression')
+plt.show()
+```
+
+---
+
+### 🤖 Python Code Implementation (Scikit-Learn)
+
+```python
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+X = np.array(df['x']).reshape(-1, 1)  # must be 2D
+y = np.array(df['y'])
+
+model = LinearRegression()
+model.fit(X, y)
+
+print("Slope (beta_1):", model.coef_[0])
+print("Intercept (beta_0):", model.intercept_)
+
+df['y_hat_sklearn'] = model.predict(X)
+
+plt.scatter(df['x'], df['y'], label='Data')
+plt.plot(df['x'], df['y_hat_sklearn'], color='green', label='Sklearn Line')
+plt.legend()
+plt.title('Sklearn Regression')
+plt.show()
+```
+
+---
+
+### ✅ Comprehension Recap & Key Answers
+
+1. **Why minimize RSS?**
+   It gives the best-fitting line by penalizing large squared errors.
+
+2. **Why derivatives?**
+   They tell us how RSS changes as we tweak coefficients. Setting derivatives to 0 finds the minimum (bottom of the loss curve).
+
+3. **Why is variance in denominator squared?**
+   It's not. The denominator is the **sum of squared deviations**, which defines variance.
+
+4. **Why is x 2D in sklearn?**
+   scikit-learn expects X to be a matrix (even if just one feature), hence shape `(n_samples, 1)`.
+
+---
 
 ## Section 3.1.2 - Assessing the Accuracy of the Coefficient Estimates
 *[Content to be added]*
