@@ -6,30 +6,38 @@
 
 ## Section 3.1 - Simple Linear Regression
 
-simple linear regression models the relationship between a single predictor variable X\nand a response variable Y. The goal is to model Y as simply an approximate linear function of X.
+Simple linear regression models the relationship between a single predictor variable $X$
+and a response variable $Y$. The goal is to model $Y$ as simply an approximate linear function of $X$.
 
 ## Model Equation:
-\\X Y = \beta_0 + \beta_1 X \\plus \\epsilon\\\n
 
-- `Y` : response variable
-- `X`: predictor variable
-- `\beta_0`: intercept -- value of Y when X = 0
-- `\beta_1`: slope -- how much Y changes with one unit increase in X
-- `epsilon`: error term -- captures random variation in Y not explained by X alone
+$$
+Y = \beta_0 + \beta_1 X + \epsilon
+$$
 
-Example: Suppose we are trying to predict salary (Y`) from years of experience (X). We use a model:
+* **$Y$** : response variable
+* **$X$** : predictor variable
+* **$\beta_0$** : intercept (value of $Y$ when $X = 0$)
+* **$\beta_1$** : slope (how much $Y$ changes with one unit increase in $X$)
+* **$\epsilon$** : error term (captures random variation in $Y$ not explained by $X$ alone)
 
-    salary = 30,000 + 5,000 * years_experience
+Example: Suppose we are trying to predict salary ($Y$) from years of experience ($X$). We use a model:
 
-This means each added year of experience adds $5,000 to the predicted salary. The "linearity" assumption lets us make predictions with a line, and the "error term" explains why the prediction isn't exact.
+$$
+\text{salary} = 30{,}000 + 5{,}000 \times \text{years_experience}
+$$
+
+This means each added year of experience adds $5,000 to the predicted salary.
+The "linearity" assumption lets us make predictions with a line, and the "error term" explains why the prediction isn't exact.
 
 ---
 
 ## Section 3.1.1 - Estimating the Coefficients
 
-### 📘 Objective:
+### 📘 Objective
 
-Estimate the best-fitting straight line ( \hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x ) for a set of data points using the **least squares** method.
+Estimate the best-fitting straight line $\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x$
+for a set of data points using the **least squares** method.
 
 ---
 
@@ -37,19 +45,20 @@ Estimate the best-fitting straight line ( \hat{y} = \hat{\beta}_0 + \hat{\beta}_
 
 #### 1. **What is RSS?**
 
-* **Residual**: ( e_i = y_i - \hat{y}_i ) is the error between the actual and predicted value.
-* **Residual Sum of Squares (RSS)**:
-  [
+* **Residual**: $e_i = y_i - \hat{y}_i$ is the error between the actual and predicted value.
+* **Residual Sum of Squares (RSS):**
+  $$
   RSS = \sum_{i=1}^n (y_i - \hat{y}*i)^2 = \sum*{i=1}^n \left(y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i)\right)^2
-  ]
-* RSS is what we **minimize** to find the best line. This means finding the parameters ( \hat{\beta}_0 ) and ( \hat{\beta}_1 ) that make the total squared error as small as possible.
+  $$
+* RSS is what we **minimize** to find the best line. This means finding the parameters $\hat{\beta}_0$ and $\hat{\beta}_1$ that make the total squared error as small as possible.
 
 ---
 
 #### 2. **Why Use Derivatives?**
 
-* A **derivative** tells us how a function changes — it's like asking: “if I nudge ( \beta_0 ) or ( \beta_1 ), how does RSS respond?”
-* We **take the derivative of RSS** with respect to ( \beta_0 ) and ( \beta_1 ), then **set those derivatives equal to 0** to find the **minimum point** of the RSS “valley”.
+* A **derivative** tells us how a function changes — it's like asking:
+  “If I nudge $\beta_0$ or $\beta_1$, how does RSS respond?”
+* We **take the derivative of RSS** with respect to $\beta_0$ and $\beta_1$, then **set those derivatives equal to 0** to find the **minimum point** of the RSS “valley”.
 * This gives us a **system of equations** whose solution yields the best estimates.
 
 ---
@@ -57,15 +66,16 @@ Estimate the best-fitting straight line ( \hat{y} = \hat{\beta}_0 + \hat{\beta}_
 #### 3. **Final Closed-Form Coefficients**
 
 * **Slope**:
-  [
-  \hat\beta_1 = \frac{ \sum (x_i - \bar x)(y_i - \bar y) }{ \sum (x_i - \bar x)^2 }
-  ]
+  $$
+  \hat{\beta}_1 = \frac{ \sum (x_i - \bar{x})(y_i - \bar{y}) }{ \sum (x_i - \bar{x})^2 }
+  $$
   This is the **covariance of x and y** over the **variance of x**.
+
 * **Intercept**:
-  [
-  \hat\beta_0 = \bar y - \hat\beta_1 \bar x
-  ]
-  This ensures the line always passes through the mean point ((\bar x, \bar y)).
+  $$
+  \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}
+  $$
+  This ensures the line always passes through the mean point $(\bar{x}, \bar{y})$.
 
 ---
 
@@ -80,11 +90,11 @@ Estimate the best-fitting straight line ( \hat{y} = \hat{\beta}_0 + \hat{\beta}_
 * **Why set the derivative = 0?**
   That’s how we find **minimum RSS** — when the slope of the RSS function is zero, we’re at the bottom of the “valley”.
 
-* **What is ( n )?**
-  It’s the number of data points. It comes up when summing over all samples (e.g., in Equation A: ( \sum y_i = n \beta_0 + \beta_1 \sum x_i )).
+* **What is $n$?**
+  It’s the number of data points. It comes up when summing over all samples (e.g., in Equation A: $\sum y_i = n \beta_0 + \beta_1 \sum x_i$).
 
-* **How does β₁ relate to β₀?**
-  You need β₁ to compute β₀, because ( \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x} )
+* **How does $\beta_1$ relate to $\beta_0$?**
+  You need $\beta_1$ to compute $\beta_0$, because $\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}$.
 
 ---
 
@@ -156,25 +166,25 @@ df["y_hat_sklearn"] = model.predict(X)
 
 * `df[["x"]]` keeps `X` as a 2D array → required because `sklearn` expects matrix-shaped input
 * `model.fit(X, y)` runs the least squares solution under the hood
-* `model.coef_` gives β₁ (the slope)
-* `model.intercept_` gives β₀ (the intercept)
-* `model.predict(X)` uses ( \hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x )
+* `model.coef_` gives $\beta_1$ (the slope)
+* `model.intercept_` gives $\beta_0$ (the intercept)
+* `model.predict(X)` uses $\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x$
 
 ---
 
 ### 🧠 Your Questions Answered
 
 **Q: Why does X need to be 2D?**
-A: Because `scikit-learn` is built for multi-feature datasets. Even with one feature, it expects the shape (n_samples, n_features) = (5, 1)
+A: Because `scikit-learn` is built for multi-feature datasets. Even with one feature, it expects the shape $(n_{\text{samples}}, n_{\text{features}}) = (5, 1)$.
 
 **Q: Why does y not need to be 2D?**
-A: Because the target is always a single value per row — a 1D vector (shape = (n,)) is fine.
+A: Because the target is always a single value per row — a 1D vector (shape = $(n,)$) is fine.
 
 **Q: What does model.fit do?**
-A: Internally computes β₀ and β₁ by minimizing RSS and stores them in the model.
+A: Internally computes $\beta_0$ and $\beta_1$ by minimizing RSS and stores them in the model.
 
 **Q: What do model.coef_ and model.intercept_ do?**
-A: They store and return the fitted slope (β₁) and intercept (β₀) respectively.
+A: They store and return the fitted slope ($\beta_1$) and intercept ($\beta_0$) respectively.
 
 ---
 
@@ -183,7 +193,7 @@ A: They store and return the fitted slope (β₁) and intercept (β₀) respecti
 You now know how to:
 
 * Define and interpret RSS
-* Derive β₀ and β₁ using calculus (least squares)
+* Derive $\beta_0$ and $\beta_1$ using calculus (least squares)
 * Implement linear regression from scratch in Python
 * Use `scikit-learn` for regression
 * Plot and interpret regression lines
