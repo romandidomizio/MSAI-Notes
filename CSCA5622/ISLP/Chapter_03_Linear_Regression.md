@@ -6,35 +6,34 @@
 
 ## Section 3.1 - Simple Linear Regression
 
-Simple linear regression models the relationship between a single predictor variable $X$
-and a response variable $Y$. The goal is to model $Y$ as simply an approximate linear function of $X$.
+Simple linear regression models the relationship between a single predictor variable $X$ and a response variable $Y$. The goal is to model $Y$ as simply an approximate linear function of $X$.
 
-## Model Equation:
+### Model Equation
 
 $$
 Y = \beta_0 + \beta_1 X + \epsilon
 $$
 
-* **$Y$** : response variable
-* **$X$** : predictor variable
-* **$\beta_0$** : intercept (value of $Y$ when $X = 0$)
-* **$\beta_1$** : slope (how much $Y$ changes with one unit increase in $X$)
-* **$\epsilon$** : error term (captures random variation in $Y$ not explained by $X$ alone)
+**Where:**
+- **$Y$**: Response variable
+- **$X$**: Predictor variable
+- **$\beta_0$**: Intercept (value of $Y$ when $X = 0$)
+- **$\beta_1$**: Slope (how much $Y$ changes with one unit increase in $X$)
+- **$\epsilon$**: Error term (captures random variation in $Y$ not explained by $X$ alone)
 
-Example: Suppose we are trying to predict salary ($Y$) from years of experience ($X$). We use a model:
+**Example:** Suppose we are trying to predict salary ($Y$) from years of experience ($X$). We use a model:
 
 $$
 \text{salary} = 30{,}000 + 5{,}000 \times \text{years_experience}
 $$
 
-This means each added year of experience adds $5,000 to the predicted salary.
-The "linearity" assumption lets us make predictions with a line, and the "error term" explains why the prediction isn't exact.
+This means each added year of experience adds $5,000 to the predicted salary. The "linearity" assumption lets us make predictions with a line, and the "error term" explains why the prediction isn't exact.
 
 ---
 
 ## Section 3.1.1 - Estimating the Coefficients
 
-### 📘 Objective:
+### 📘 Objective
 
 Estimate the best-fitting straight line $(\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x)$ for a set of data points using the **least squares** method.
 
@@ -42,18 +41,20 @@ Estimate the best-fitting straight line $(\hat{y} = \hat{\beta}_0 + \hat{\beta}_
 
 ### 🔧 Key Concepts
 
-#### 1. **What is RSS?**
+#### 1. What is RSS?
 
 * **Residual**: $(e_i = y_i - \hat{y}_i)$ is the error between the actual and predicted value.
-* **Residual Sum of Squares (RSS):**
+* **Residual Sum of Squares (RSS)**:
+
   $$
   RSS = \sum_{i=1}^n (y_i - \hat{y}_i)^2 = \sum_{i=1}^n \left(y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i)\right)^2
   $$
+
 * RSS is what we **minimize** to find the best line. This means finding the parameters $(\hat{\beta}_0)$ and $(\hat{\beta}_1)$ that make the total squared error as small as possible.
 
 ---
 
-#### 2. **Why Use Derivatives?**
+#### 2. Why Use Derivatives?
 
 * A **derivative** tells us how a function changes — it's like asking: "if I nudge $(\beta_0)$ or $(\beta_1)$, how does RSS respond?"
 * We **take the derivative of RSS** with respect to $(\beta_0)$ and $(\beta_1)$, then **set those derivatives equal to 0** to find the **minimum point** of the RSS "valley".
@@ -61,37 +62,37 @@ Estimate the best-fitting straight line $(\hat{y} = \hat{\beta}_0 + \hat{\beta}_
 
 ---
 
-#### 3. **Final Closed-Form Coefficients**
+#### 3. Final Closed-Form Coefficients
 
 * **Slope**:
+
   $$
   \hat\beta_1 = \frac{ \sum (x_i - \bar x)(y_i - \bar y) }{ \sum (x_i - \bar x)^2 }
   $$
+
   This is the **covariance of x and y** over the **variance of x**.
+
 * **Intercept**:
+
   $$
   \hat\beta_0 = \bar y - \hat\beta_1 \bar x
   $$
+
   This ensures the line always passes through the mean point $((\bar x, \bar y))$.
 
 ---
 
 ### 🧠 Important Clarifications
 
-* **Why is variance squared?**
-  It's not. The denominator is already the squared deviation from the mean — the formula itself is the definition of variance, not its square.
+* **Why is variance squared?** It's not. The denominator is already the squared deviation from the mean — the formula itself is the definition of variance, not its square.
 
-* **Why use the mean?**
-  It centers the data, helping the line balance positive and negative residuals.
+* **Why use the mean?** It centers the data, helping the line balance positive and negative residuals.
 
-* **Why set the derivative = 0?**
-  That's how we find **minimum RSS** — when the slope of the RSS function is zero, we're at the bottom of the "valley".
+* **Why set the derivative = 0?** That's how we find **minimum RSS** — when the slope of the RSS function is zero, we're at the bottom of the "valley".
 
-* **What is $(n)$?**
-  It's the number of data points. It comes up when summing over all samples (e.g., in Equation A: $(\sum y_i = n \beta_0 + \beta_1 \sum x_i)$).
+* **What is $(n)$?** It's the number of data points. It comes up when summing over all samples (e.g., in Equation A: $(\sum y_i = n \beta_0 + \beta_1 \sum x_i)$).
 
-* **How does β₁ relate to β₀?**
-  You need β₁ to compute β₀, because $(\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x})$
+* **How does β₁ relate to β₀?** You need β₁ to compute β₀, because $(\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x})$
 
 ---
 
@@ -136,7 +137,7 @@ plt.show()
 
 ---
 
-### 🤖 `scikit-learn` Implementation
+### 🤖 Scikit-learn Implementation
 
 ```python
 from sklearn.linear_model import LinearRegression
@@ -171,16 +172,16 @@ df["y_hat_sklearn"] = model.predict(X)
 
 ### 🧠 Your Questions Answered
 
-**Q: Why does X need to be 2D?**
+**Q: Why does X need to be 2D?**  
 A: Because `scikit-learn` is built for multi-feature datasets. Even with one feature, it expects the shape $(n_samples, n_features) = (5, 1)$
 
-**Q: Why does y not need to be 2D?**
+**Q: Why does y not need to be 2D?**  
 A: Because the target is always a single value per row — a 1D vector $(shape = (n,))$ is fine.
 
-**Q: What does model.fit do?**
+**Q: What does model.fit do?**  
 A: Internally computes β₀ and β₁ by minimizing RSS and stores them in the model.
 
-**Q: What do model.coef_ and model.intercept_ do?**
+**Q: What do model.coef_ and model.intercept_ do?**  
 A: They store and return the fitted slope (β₁) and intercept (β₀) respectively.
 
 ---
@@ -200,122 +201,116 @@ You now know how to:
 
 ## Section 3.1.2 - Assessing the Accuracy of the Coefficient Estimates
 
----
+### 🔍 Overview
 
-#### 🔍 Why This Section Matters
+Once we fit a linear regression model and obtain the estimated coefficients $(\hat{\beta}_0)$ and $(\hat{\beta}_1)$, we want to evaluate how accurate those estimates are. This is essential for determining how much confidence we can place in our model's predictions and whether the relationship between the predictor $(X)$ and the response $(Y)$ is statistically significant.
 
-When we fit a linear regression model using least squares, we obtain estimated values for the intercept (\hat{\beta}_0) and slope (\hat{\beta}_1). These values are **estimates**, not exact truths — they change with different samples due to natural data variation. In this section, we learn how to **quantify our uncertainty** in these estimates using **standard errors**, **confidence intervals**, and **hypothesis tests**.
+We achieve this by calculating:
+- Standard errors of the coefficient estimates
+- Confidence intervals for the estimates
+- t-statistics for hypothesis testing
 
----
-
-### 🔢 Key Concepts and Assumptions
-
-#### ✅ Assumptions:
-
-To assess accuracy reliably, we assume:
-
-* **Independence of Errors**: Observations don’t influence each other.
-* **Constant Variance (Homoscedasticity)**: All errors have the same variance, (\sigma^2).
-* **Normality (Optional)**: Errors are normally distributed.
+This process builds on the least squares method introduced in Section 3.1.1.
 
 ---
 
-### 📐 Definitions
+### ✅ Key Assumptions
 
-#### ✅ Residual Standard Error (RSE):
+To assess the accuracy, we assume the following:
 
-Estimates the variance of residuals:
-[
-\hat\sigma^2 = \frac{RSS}{n - 2}, \quad \hat\sigma = \sqrt{\hat\sigma^2}
-]
-
----
-
-### 📊 Variance and Standard Errors of Coefficients
-
-Using least squares, we derive the variance and standard error of the estimated coefficients:
-
-#### Variance and Standard Error of (\hat\beta_1):
-
-[
-\mathrm{Var}(\hat\beta_1) = \frac{\sigma^2}{\sum (x_i - \bar{x})^2}, \quad SE(\hat\beta_1) = \sqrt{\mathrm{Var}(\hat\beta_1)}
-]
-
-#### Variance and Standard Error of (\hat\beta_0):
-
-[
-\mathrm{Var}(\hat\beta_0) = \sigma^2 \left( \frac{1}{n} + \frac{\bar{x}^2}{\sum (x_i - \bar{x})^2} \right), \quad SE(\hat\beta_0) = \sqrt{\mathrm{Var}(\hat\beta_0)}
-]
-
-* Interpretation:
-
-  * More spread in (x) → smaller SE((\hat\beta_1))
-  * Larger (n) → smaller SE((\hat\beta_0))
+**Linearity:** The relationship between $(X)$ and $(Y)$ is linear.  
+**Independence:** Observations are independent of each other.  
+**Homoscedasticity:** The error terms $(\varepsilon_i)$ have constant variance $(\sigma^2)$.  
+**Normality (for small samples):** The errors are normally distributed (not required for large samples due to CLT).
 
 ---
 
-### 🧪 Hypothesis Testing
+### 🔢 Variance and Standard Errors
 
-#### Null Hypothesis:
+**Residual Sum of Squares (RSS):**
 
-[
-H_0: \beta_j = 0
-]
+$$
+RSS = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+$$
 
-#### t-Statistic:
+We use this to estimate $(\sigma^2)$:
 
-[
-t = \frac{ \hat\beta_j - 0 }{ SE(\hat\beta_j) }
-]
+$$
+\hat{\sigma}^2 = \frac{RSS}{n - 2}
+$$
 
-Compare this value to a t-distribution with (n - 2) degrees of freedom. If (t) is large in magnitude, we reject the null (i.e., the predictor is significant).
+**Then, we compute the variances and standard errors for the coefficients:**
 
----
+**Variance of $(\hat{\beta}_1)$:**
 
-### 🟦 Confidence Intervals
+$$
+\text{Var}(\hat{\beta}_1) = \frac{\sigma^2}{\sum (x_i - \bar{x})^2}, \quad SE(\hat{\beta}_1) = \sqrt{\text{Var}(\hat{\beta}_1)}
+$$
 
-For a 95% CI:
-[
-\hat\beta_j \pm t_{\alpha/2, df=n-2} \times SE(\hat\beta_j)
-]
+**Variance of $(\hat{\beta}_0)$:**
 
-Approximate:
-[
-\hat\beta_j \pm 2 \cdot SE(\hat\beta_j)
-]
+$$
+\text{Var}(\hat{\beta}_0) = \sigma^2 \left( \frac{1}{n} + \frac{\bar{x}^2}{\sum (x_i - \bar{x})^2} \right), \quad SE(\hat{\beta}_0) = \sqrt{\text{Var}(\hat{\beta}_0)}
+$$
 
 ---
 
-### 🧮 Fully Worked Example (Manual Calculation)
+### 📊 Worked Example: Manual Calculation
 
-Given dataset:
-[
-(x, y) = (1, 2), (2, 3), (3, 5)
-]
+**Given the dataset:**  
+$X = [1, 2, 3]$  
+$Y = [2, 3, 5]$
 
-Using standard regression formulas:
+**Step-by-Step:**
 
-* (\hat\beta_1 = 1.5)
-* (\hat\beta_0 = 0.333)
-* (\hat y_i = \hat\beta_0 + \hat\beta_1 x_i)
-* (RSS = \sum (y_i - \hat y_i)^2)
-* (\hat\sigma^2 = \frac{RSS}{1}) (since (n=3))
-* Plug into formulas above to compute SEs and t-values
+1. **Compute means:**
+   $$
+   \bar{x} = 2, \quad \bar{y} = 3.33
+   $$
+
+2. **Compute slope and intercept:**
+   $$
+   \hat{\beta}_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2} = \frac{3}{2} = 1.5
+   $$
+   $$
+   \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x} = 3.33 - (1.5)(2) = 0.33
+   $$
+
+3. **Predicted values:**
+   $$
+   \hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i \Rightarrow [1.83, 3.33, 4.83]
+   $$
+
+4. **Compute RSS:**
+   $$
+   RSS = \sum (y_i - \hat{y}_i)^2 = (2-1.83)^2 + (3-3.33)^2 + (5-4.83)^2 = 0.0667 + 0.1089 + 0.0289 = 0.2045
+   $$
+
+5. **Estimate $(\hat{\sigma}^2)$:**
+   $$
+   \hat{\sigma}^2 = \frac{RSS}{n-2} = 0.2045 / 1 = 0.2045, \quad \hat{\sigma} = \sqrt{0.2045} \approx 0.452
+   $$
+
+6. **Standard errors:**
+   $$
+   SE(\hat{\beta}_1) = \sqrt{\frac{0.2045}{2}} = 0.319
+   $$
+   $$
+   SE(\hat{\beta}_0) = \sqrt{0.2045 \left( \frac{1}{3} + \frac{2^2}{2} \right)} = \sqrt{0.2045 \times 2.833} \approx 0.758
+   $$
 
 ---
 
-### 🧪 Python Implementation
+### 🎓 Python Implementation (With Interpretation)
 
 ```python
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Dataset
 x = np.array([1, 2, 3])
 y = np.array([2, 3, 5])
 
-# Means
 x_mean = np.mean(x)
 y_mean = np.mean(y)
 
@@ -325,14 +320,11 @@ denominator = np.sum((x - x_mean)**2)
 beta_1 = numerator / denominator
 beta_0 = y_mean - beta_1 * x_mean
 
-# Predictions
 y_hat = beta_0 + beta_1 * x
 
-# Residuals and RSS
+# RSS
 residuals = y - y_hat
 RSS = np.sum(residuals**2)
-
-# Variance estimate
 n = len(x)
 sigma_squared_hat = RSS / (n - 2)
 
@@ -340,49 +332,441 @@ sigma_squared_hat = RSS / (n - 2)
 SE_beta_1 = np.sqrt(sigma_squared_hat / np.sum((x - x_mean)**2))
 SE_beta_0 = np.sqrt(sigma_squared_hat * (1/n + (x_mean**2 / np.sum((x - x_mean)**2))))
 
-# Confidence Intervals
-CI_beta_1 = (beta_1 - 2 * SE_beta_1, beta_1 + 2 * SE_beta_1)
-CI_beta_0 = (beta_0 - 2 * SE_beta_0, beta_0 + 2 * SE_beta_0)
-
 # t-values
 t_beta_1 = beta_1 / SE_beta_1
 t_beta_0 = beta_0 / SE_beta_0
 
-# Display Results
-print("Beta_1:", beta_1, "SE:", SE_beta_1, "95% CI:", CI_beta_1)
-print("Beta_0:", beta_0, "SE:", SE_beta_0, "95% CI:", CI_beta_0)
+# Confidence Intervals (95%)
+CI_beta_1 = (beta_1 - 2 * SE_beta_1, beta_1 + 2 * SE_beta_1)
+CI_beta_0 = (beta_0 - 2 * SE_beta_0, beta_0 + 2 * SE_beta_0)
+
+print("Beta_1:", beta_1, "SE:", SE_beta_1, "CI:", CI_beta_1)
+print("Beta_0:", beta_0, "SE:", SE_beta_0, "CI:", CI_beta_0)
 ```
 
 ---
 
-### 🔑 Summary of Outputs
+### 🔑 Interpretation
 
-| Coefficient | Estimate | SE    | t-value | 95% CI        |
-| ----------- | -------- | ----- | ------- | ------------- |
-| (\beta_0)   | 0.333    | 0.624 | 0.53    | (-0.91, 1.58) |
-| (\beta_1)   | 1.5      | 0.289 | 5.20    | (0.92, 2.08)  |
+- **Standard Error (SE)** tells us how much our estimate would vary across different datasets.
+- **t-value** helps test the hypothesis $(H_0: \beta_j = 0)$.
+- **Confidence Intervals** provide a range within which the true coefficient likely lies.
+- **A small SE and large t-value** suggest strong evidence that the coefficient is significant.
 
 ---
 
-### 🔁 Final Notes
+### 🔄 Summary Table
 
-* **High t-value** (like for (\beta_1)) suggests strong evidence that the slope isn’t zero.
-* **Wider CI** → more uncertainty; **narrow CI** → more precise estimate.
-* Always estimate **error variance** using residuals to plug into SE formulas.
+| Coefficient | Estimate | SE    | t-value | 95% CI        |
+|-------------|----------|-------|---------|---------------|
+| $\beta_0$   | 0.333    | 0.758 | 0.439   | (-1.18, 1.85) |
+| $\beta_1$   | 1.5      | 0.319 | 4.70    | (0.862, 2.138)|
 
 ---
 
 ## Section 3.1.3 - Assessing the Accuracy of the Model
-*[Content to be added]*
+
+### 🎯 Objective
+
+Once we estimate a linear regression model:
+
+$$
+\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i
+$$
+
+We want to **evaluate how accurate this model is**. That means:
+
+* How far are actual values from predicted values?
+* How precise are our slope and intercept estimates?
+* Can we trust these values statistically?
+
+---
+
+### 🔍 Key Concepts in This Section
+
+* **Residuals**: $( e_i = y_i - \hat{y}_i )$
+* **Residual Sum of Squares (RSS)**: Measures total error
+* **Residual Standard Error (RSE)**: Measures average error
+* **Standard Errors (SE)**: Measures precision of $(\hat{\beta}_0)$ and $(\hat{\beta}_1)$
+* **Confidence Intervals**: Range of plausible values for coefficients
+* **Hypothesis Testing**: Testing whether coefficients are significant
+
+---
+
+### 📘 Step-by-Step Breakdown
+
+#### 1. Residuals
+
+Each prediction has some error. That error is called the **residual**:
+
+$$
+e_i = y_i - \hat{y}_i
+$$
+
+**Interpretation:**
+- **Positive residual**: Model underpredicts the actual value
+- **Negative residual**: Model overpredicts the actual value
+- **Zero residual**: Perfect prediction (rare in practice)
+
+**Example:** If actual salary is $60,000 but model predicts $55,000, the residual is +$5,000.
+
+---
+
+#### 2. Residual Sum of Squares (RSS)
+
+This is the sum of squared residuals:
+
+$$
+RSS = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \sum_{i=1}^{n} e_i^2
+$$
+
+**Why square the residuals?**
+- Squaring makes all errors positive
+- Prevents positive and negative errors from canceling out
+- Penalizes large errors more heavily (mathematical convenience for optimization)
+
+**Interpretation:**
+- **Lower RSS**: Better model fit
+- **Higher RSS**: More unexplained variation in the data
+- **Units**: Squared units of the response variable
+
+**Example Calculation:**
+```python
+# For our dataset: y = [2, 3, 5], ŷ = [1.83, 3.33, 4.83]
+residuals = [2-1.83, 3-3.33, 5-4.83] = [0.17, -0.33, 0.17]
+RSS = (0.17)² + (-0.33)² + (0.17)² = 0.0289 + 0.1089 + 0.0289 = 0.1667
+```
+
+---
+
+#### 3. Residual Standard Error (RSE)
+
+RSS grows with number of data points, so we divide by degrees of freedom to get a standard error:
+
+$$
+RSE = \sqrt{\frac{RSS}{n - 2}}
+$$
+
+**Why $(n - 2)$ degrees of freedom?**
+- We have $n$ data points
+- We estimate 2 parameters $(\beta_0, \beta_1)$
+- Degrees of freedom = $n - 2$
+
+**Interpretation:**
+- This gives us the **average prediction error**
+- In units of the response variable $(y)$
+- Roughly represents the typical distance between actual and predicted values
+
+**Example:**
+```python
+RSS = 0.1667  # From above
+n = 3         # Number of data points
+df = n - 2    # Degrees of freedom
+RSE = sqrt(RSS / df) = sqrt(0.1667 / 1) = sqrt(0.1667) ≈ 0.408
+```
+
+**Rule of thumb:** RSE represents the typical size of a residual. In our example, the model typically misses by about $408 when predicting salary.
+
+---
+
+#### 4. Standard Errors of Coefficients
+
+These tell us how much $(\hat{\beta}_0)$ and $(\hat{\beta}_1)$ would vary if we collected new data:
+
+**Standard Error of Slope:**
+
+$$
+SE(\hat{\beta}_1) = \frac{RSE}{\sqrt{\sum (x_i - \bar{x})^2}}
+$$
+
+**Standard Error of Intercept:**
+
+$$
+SE(\hat{\beta}_0) = RSE \cdot \sqrt{ \frac{1}{n} + \frac{\bar{x}^2}{\sum (x_i - \bar{x})^2} }
+$$
+
+**Interpretation:**
+- **Small SE**: Precise estimate, little variation expected in new samples
+- **Large SE**: Imprecise estimate, would vary a lot with new data
+- **SE depends on**: Sample size $(n)$, spread of $x$ values, and RSE
+
+**Example Calculation:**
+```python
+# From our dataset
+sum_squared_deviations = sum((x - x_bar)²) = (1-2)² + (2-2)² + (3-2)² = 1 + 0 + 1 = 2
+RSE = 0.408
+
+SE_beta_1 = RSE / sqrt(sum_squared_deviations) = 0.408 / sqrt(2) ≈ 0.408 / 1.414 ≈ 0.289
+SE_beta_0 = RSE * sqrt(1/3 + (2)²/2) = 0.408 * sqrt(0.333 + 4/2) = 0.408 * sqrt(0.333 + 2) = 0.408 * sqrt(2.333) ≈ 0.408 * 1.527 ≈ 0.623
+```
+
+---
+
+#### 5. Confidence Intervals
+
+For 95% confidence:
+
+$$
+\hat{\beta}_j \pm 2 \cdot SE(\hat{\beta}_j)
+$$
+
+**Meaning:**
+- There's a 95% chance the true coefficient lies in this interval (assuming normal errors)
+- **Wider interval**: More uncertainty about the true value
+- **Narrower interval**: More confidence in our estimate
+
+**Example:**
+```python
+beta_1 = 1.5, SE_beta_1 = 0.289
+CI_beta_1 = (1.5 - 2*0.289, 1.5 + 2*0.289) = (1.5 - 0.578, 1.5 + 0.578) = (0.922, 2.078)
+
+beta_0 = 0.33, SE_beta_0 = 0.623
+CI_beta_0 = (0.33 - 2*0.623, 0.33 + 2*0.623) = (0.33 - 1.246, 0.33 + 1.246) = (-0.916, 1.576)
+```
+
+**Interpretation:** We're 95% confident that:
+- The true slope is between 0.922 and 2.078 (doesn't include 0, so significant)
+- The true intercept is between -0.916 and 1.576 (includes 0, so not significant)
+
+---
+
+#### 6. Hypothesis Testing (t-test)
+
+We ask: "Does a variable really affect the outcome? Is $\beta_j \neq 0$? Or could it just be noise?"
+
+**Null Hypothesis:**
+$$
+H_0: \beta_j = 0
+$$
+
+**Alternative Hypothesis:**
+$$
+H_a: \beta_j \neq 0
+$$
+
+**t-Statistic:**
+
+$$
+t = \frac{\hat{\beta}_j}{SE(\hat{\beta}_j)}
+$$
+
+**Decision Rule:**
+- Compare $t$ to a t-distribution with $(n - 2)$ degrees of freedom
+- Large absolute $t$-value (typically $> 2$) → reject $H_0$ (significant)
+- Small absolute $t$-value → fail to reject $H_0$ (not significant)
+
+**Example:**
+```python
+t_beta_1 = beta_1 / SE_beta_1 = 1.5 / 0.289 ≈ 5.19
+t_beta_0 = beta_0 / SE_beta_0 = 0.33 / 0.623 ≈ 0.53
+
+# t_beta_1 = 5.19 > 2, so slope is significant (p < 0.05)
+# t_beta_0 = 0.53 < 2, so intercept is not significant (p > 0.05)
+```
+
+**Interpretation:**
+- **Slope significant**: Years of experience has a meaningful relationship with salary
+- **Intercept not significant**: When experience = 0, salary could plausibly be 0 (or any value in our CI)
+
+---
+
+### 📊 Complete Worked Example (Manual Calculation)
+
+**Given dataset:**
+
+| x | y  |
+|---|----|
+| 1 | 2  |
+| 2 | 3  |
+| 3 | 5  |
+
+**Step 1: Calculate means**
+$$
+\bar{x} = \frac{1+2+3}{3} = 2, \quad \bar{y} = \frac{2+3+5}{3} = \frac{10}{3} \approx 3.333
+$$
+
+**Step 2: Calculate slope**
+$$
+\hat{\beta}_1 = \frac{ \sum (x_i - \bar{x})(y_i - \bar{y}) }{ \sum (x_i - \bar{x})^2 } = \frac{ (1-2)(2-3.333) + (2-2)(3-3.333) + (3-2)(5-3.333) }{ (1-2)^2 + (2-2)^2 + (3-2)^2 } = \frac{ (-1)(-1.333) + 0 + (1)(1.667) }{ 1 + 0 + 1 } = \frac{1.333 + 1.667}{2} = \frac{3}{2} = 1.5
+$$
+
+**Step 3: Calculate intercept**
+$$
+\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x} = 3.333 - 1.5 \times 2 = 3.333 - 3 = 0.333
+$$
+
+**Step 4: Generate predictions**
+$$
+\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i = 0.333 + 1.5 x_i
+$$
+- For $x=1$: $\hat{y} = 0.333 + 1.5 \times 1 = 1.833$
+- For $x=2$: $\hat{y} = 0.333 + 1.5 \times 2 = 3.333$
+- For $x=3$: $\hat{y} = 0.333 + 1.5 \times 3 = 4.833$
+
+**Step 5: Calculate residuals**
+- $e_1 = 2 - 1.833 = 0.167$
+- $e_2 = 3 - 3.333 = -0.333$
+- $e_3 = 5 - 4.833 = 0.167$
+
+**Step 6: Calculate RSS**
+$$
+RSS = (0.167)^2 + (-0.333)^2 + (0.167)^2 = 0.0279 + 0.1109 + 0.0279 = 0.1667
+$$
+
+**Step 7: Calculate RSE**
+$$
+RSE = \sqrt{\frac{RSS}{n-2}} = \sqrt{\frac{0.1667}{1}} = \sqrt{0.1667} \approx 0.408
+$$
+
+**Step 8: Calculate standard errors**
+**For slope:**
+$$
+SE(\hat{\beta}_1) = \frac{RSE}{\sqrt{\sum (x_i - \bar{x})^2}} = \frac{0.408}{\sqrt{2}} \approx \frac{0.408}{1.414} \approx 0.289
+$$
+
+**For intercept:**
+$$
+SE(\hat{\beta}_0) = RSE \cdot \sqrt{ \frac{1}{n} + \frac{\bar{x}^2}{\sum (x_i - \bar{x})^2} } = 0.408 \cdot \sqrt{ \frac{1}{3} + \frac{4}{2} } = 0.408 \cdot \sqrt{0.333 + 2} = 0.408 \cdot \sqrt{2.333} \approx 0.408 \cdot 1.527 \approx 0.623
+$$
+
+**Step 9: Calculate t-statistics**
+$$
+t_{\beta_1} = \frac{\hat{\beta}_1}{SE(\hat{\beta}_1)} = \frac{1.5}{0.289} \approx 5.19
+$$
+$$
+t_{\beta_0} = \frac{\hat{\beta}_0}{SE(\hat{\beta}_0)} = \frac{0.333}{0.623} \approx 0.534
+$$
+
+**Step 10: Calculate 95% confidence intervals**
+**For slope:**
+$$
+CI_{\beta_1} = 1.5 \pm 2 \times 0.289 = (1.5 - 0.578, 1.5 + 0.578) = (0.922, 2.078)
+$$
+
+**For intercept:**
+$$
+CI_{\beta_0} = 0.333 \pm 2 \times 0.623 = (0.333 - 1.246, 0.333 + 1.246) = (-0.913, 1.579)
+$$
+
+---
+
+### 💻 Complete Python Implementation
+
+```python
+import numpy as np
+
+# Dataset
+x = np.array([1, 2, 3])
+y = np.array([2, 3, 5])
+
+# Step 1: Calculate means
+x_bar = np.mean(x)
+y_bar = np.mean(y)
+
+# Step 2: Estimate coefficients
+numerator = np.sum((x - x_bar) * (y - y_bar))
+denominator = np.sum((x - x_bar)**2)
+beta_1 = numerator / denominator
+beta_0 = y_bar - beta_1 * x_bar
+
+# Step 3: Generate predictions
+y_hat = beta_0 + beta_1 * x
+
+# Step 4: Calculate residuals and RSS
+residuals = y - y_hat
+RSS = np.sum(residuals**2)
+
+# Step 5: Calculate RSE
+n = len(x)
+RSE = np.sqrt(RSS / (n - 2))
+
+# Step 6: Calculate standard errors
+SE_beta_1 = RSE / np.sqrt(np.sum((x - x_bar)**2))
+SE_beta_0 = RSE * np.sqrt(1/n + (x_bar**2 / np.sum((x - x_bar)**2)))
+
+# Step 7: Calculate t-statistics
+t_beta_1 = beta_1 / SE_beta_1
+t_beta_0 = beta_0 / SE_beta_0
+
+# Step 8: Calculate 95% confidence intervals
+CI_beta_1_lower = beta_1 - 2 * SE_beta_1
+CI_beta_1_upper = beta_1 + 2 * SE_beta_1
+CI_beta_0_lower = beta_0 - 2 * SE_beta_0
+CI_beta_0_upper = beta_0 + 2 * SE_beta_0
+
+# Display results
+print(f"β₁ = {beta_1:.3f}, SE = {SE_beta_1:.3f}, t = {t_beta_1:.3f}, 95% CI = ({CI_beta_1_lower:.3f}, {CI_beta_1_upper:.3f})")
+print(f"β₀ = {beta_0:.3f}, SE = {SE_beta_0:.3f}, t = {t_beta_0:.3f}, 95% CI = ({CI_beta_0_lower:.3f}, {CI_beta_0_upper:.3f})")
+print(f"RSS = {RSS:.4f}, RSE = {RSE:.3f}")
+```
+
+**Expected Output:**
+```
+β₁ = 1.500, SE = 0.289, t = 5.190, 95% CI = (0.922, 2.078)
+β₀ = 0.333, SE = 0.623, t = 0.534, 95% CI = (-0.913, 1.579)
+RSS = 0.1667, RSE = 0.408
+```
+
+---
+
+### 🧠 Key Takeaways
+
+| Term | Purpose | Interpretation |
+|------|---------|----------------|
+| **Residuals** | Individual errors | $e_i = y_i - \hat{y}_i$ |
+| **RSS** | Total squared error | $\sum e_i^2$ - lower is better |
+| **RSE** | Average prediction error | $\sqrt{RSS/(n-2)}$ - in units of y |
+| **SE** | Precision of estimates | How much $\hat{\beta}$ varies |
+| **t-value** | Test significance | $t = \hat{\beta}/SE$ - large = significant |
+| **CI** | Plausible range | $\hat{\beta} \pm 2 \times SE$ |
+
+**Statistical Significance:**
+- **Slope significant** (t = 5.19 > 2): Years of experience meaningfully affects salary
+- **Intercept not significant** (t = 0.53 < 2): When experience = 0, salary could plausibly be 0
+
+**Model Quality:**
+- RSE ≈ 0.408 means the model typically misses by about $408 when predicting salary
+- This represents the irreducible error - even a perfect model couldn't do better than this
+
+---
+
+### 🎓 Learning Check
+
+**Questions to test understanding:**
+
+1. **What does a residual of -5 mean?**
+2. **Why do we square residuals in RSS?**
+3. **Why divide by (n-2) for RSE?**
+4. **What does a large t-value tell us?**
+5. **When would you trust a confidence interval?**
+
+**Answers:**
+1. The model overpredicted by 5 units
+2. To make all errors positive and penalize large errors more
+3. Because we estimate 2 parameters, leaving n-2 degrees of freedom
+4. Strong evidence against the null hypothesis (coefficient ≠ 0)
+5. When the interval is narrow and doesn't include problematic values
+
+---
+
+### 🚀 Next Steps
+
+Now that you understand model accuracy assessment, you're ready to:
+- Evaluate regression models in practice
+- Compare different models using these metrics
+- Move on to multiple linear regression (Section 3.2)
+- Learn about model selection and validation techniques
 
 ---
 
 ## Section 3.2 - Multiple Linear Regression
 
 ### 3.2.1 - Estimating the Regression Coefficients
+
 *[Content to be added]*
 
 ### 3.2.2 - Some Important Questions
+
 *[Content to be added]*
 
 ---
@@ -390,22 +774,27 @@ print("Beta_0:", beta_0, "SE:", SE_beta_0, "95% CI:", CI_beta_0)
 ## Section 3.3 - Other Considerations in the Regression Model
 
 ### 3.3.1 - Qualitative Predictors
+
 *[Content to be added]*
 
 ### 3.3.2 - Extensions of the Linear Model
+
 *[Content to be added]*
 
 ### 3.3.3 - Potential Problems
+
 *[Content to be added]*
 
 ---
 
 ## Section 3.4 - The Marketing Plan
+
 *[Content to be added]*
 
 ---
 
 ## Section 3.5 - Comparison of Linear Regression with K-Nearest Neighbors
+
 *[Content to be added]*
 
 ---
@@ -413,32 +802,41 @@ print("Beta_0:", beta_0, "SE:", SE_beta_0, "95% CI:", CI_beta_0)
 ## Section 3.6 - Lab: Linear Regression
 
 ### 3.6.1 - Importing packages
+
 *[Content to be added]*
 
 ### 3.6.2 - Simple Linear Regression
+
 *[Content to be added]*
 
 ### 3.6.3 - Multiple Linear Regression
+
 *[Content to be added]*
 
 ### 3.6.4 - Multivariate Goodness of Fit
+
 *[Content to be added]*
 
 ### 3.6.5 - Interaction Terms
+
 *[Content to be added]*
 
 ### 3.6.6 - Non-linear Transformations of the Predictors
+
 *[Content to be added]*
 
 ### 3.6.7 - Qualitative Predictors
+
 *[Content to be added]*
 
 ---
 
 ## Section 3.7 - Exercises
+
 *[Content to be added]*
 
 ---
 
 ## Notes
+
 *[Add your notes here]*
