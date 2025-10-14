@@ -199,7 +199,176 @@ You now know how to:
 ---
 
 ## Section 3.1.2 - Assessing the Accuracy of the Coefficient Estimates
-*[Content to be added]*
+
+---
+
+#### 🔍 Why This Section Matters
+
+When we fit a linear regression model using least squares, we obtain estimated values for the intercept (\hat{\beta}_0) and slope (\hat{\beta}_1). These values are **estimates**, not exact truths — they change with different samples due to natural data variation. In this section, we learn how to **quantify our uncertainty** in these estimates using **standard errors**, **confidence intervals**, and **hypothesis tests**.
+
+---
+
+### 🔢 Key Concepts and Assumptions
+
+#### ✅ Assumptions:
+
+To assess accuracy reliably, we assume:
+
+* **Independence of Errors**: Observations don’t influence each other.
+* **Constant Variance (Homoscedasticity)**: All errors have the same variance, (\sigma^2).
+* **Normality (Optional)**: Errors are normally distributed.
+
+---
+
+### 📐 Definitions
+
+#### ✅ Residual Standard Error (RSE):
+
+Estimates the variance of residuals:
+[
+\hat\sigma^2 = \frac{RSS}{n - 2}, \quad \hat\sigma = \sqrt{\hat\sigma^2}
+]
+
+---
+
+### 📊 Variance and Standard Errors of Coefficients
+
+Using least squares, we derive the variance and standard error of the estimated coefficients:
+
+#### Variance and Standard Error of (\hat\beta_1):
+
+[
+\mathrm{Var}(\hat\beta_1) = \frac{\sigma^2}{\sum (x_i - \bar{x})^2}, \quad SE(\hat\beta_1) = \sqrt{\mathrm{Var}(\hat\beta_1)}
+]
+
+#### Variance and Standard Error of (\hat\beta_0):
+
+[
+\mathrm{Var}(\hat\beta_0) = \sigma^2 \left( \frac{1}{n} + \frac{\bar{x}^2}{\sum (x_i - \bar{x})^2} \right), \quad SE(\hat\beta_0) = \sqrt{\mathrm{Var}(\hat\beta_0)}
+]
+
+* Interpretation:
+
+  * More spread in (x) → smaller SE((\hat\beta_1))
+  * Larger (n) → smaller SE((\hat\beta_0))
+
+---
+
+### 🧪 Hypothesis Testing
+
+#### Null Hypothesis:
+
+[
+H_0: \beta_j = 0
+]
+
+#### t-Statistic:
+
+[
+t = \frac{ \hat\beta_j - 0 }{ SE(\hat\beta_j) }
+]
+
+Compare this value to a t-distribution with (n - 2) degrees of freedom. If (t) is large in magnitude, we reject the null (i.e., the predictor is significant).
+
+---
+
+### 🟦 Confidence Intervals
+
+For a 95% CI:
+[
+\hat\beta_j \pm t_{\alpha/2, df=n-2} \times SE(\hat\beta_j)
+]
+
+Approximate:
+[
+\hat\beta_j \pm 2 \cdot SE(\hat\beta_j)
+]
+
+---
+
+### 🧮 Fully Worked Example (Manual Calculation)
+
+Given dataset:
+[
+(x, y) = (1, 2), (2, 3), (3, 5)
+]
+
+Using standard regression formulas:
+
+* (\hat\beta_1 = 1.5)
+* (\hat\beta_0 = 0.333)
+* (\hat y_i = \hat\beta_0 + \hat\beta_1 x_i)
+* (RSS = \sum (y_i - \hat y_i)^2)
+* (\hat\sigma^2 = \frac{RSS}{1}) (since (n=3))
+* Plug into formulas above to compute SEs and t-values
+
+---
+
+### 🧪 Python Implementation
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Dataset
+x = np.array([1, 2, 3])
+y = np.array([2, 3, 5])
+
+# Means
+x_mean = np.mean(x)
+y_mean = np.mean(y)
+
+# Coefficients
+numerator = np.sum((x - x_mean) * (y - y_mean))
+denominator = np.sum((x - x_mean)**2)
+beta_1 = numerator / denominator
+beta_0 = y_mean - beta_1 * x_mean
+
+# Predictions
+y_hat = beta_0 + beta_1 * x
+
+# Residuals and RSS
+residuals = y - y_hat
+RSS = np.sum(residuals**2)
+
+# Variance estimate
+n = len(x)
+sigma_squared_hat = RSS / (n - 2)
+
+# Standard Errors
+SE_beta_1 = np.sqrt(sigma_squared_hat / np.sum((x - x_mean)**2))
+SE_beta_0 = np.sqrt(sigma_squared_hat * (1/n + (x_mean**2 / np.sum((x - x_mean)**2))))
+
+# Confidence Intervals
+CI_beta_1 = (beta_1 - 2 * SE_beta_1, beta_1 + 2 * SE_beta_1)
+CI_beta_0 = (beta_0 - 2 * SE_beta_0, beta_0 + 2 * SE_beta_0)
+
+# t-values
+t_beta_1 = beta_1 / SE_beta_1
+t_beta_0 = beta_0 / SE_beta_0
+
+# Display Results
+print("Beta_1:", beta_1, "SE:", SE_beta_1, "95% CI:", CI_beta_1)
+print("Beta_0:", beta_0, "SE:", SE_beta_0, "95% CI:", CI_beta_0)
+```
+
+---
+
+### 🔑 Summary of Outputs
+
+| Coefficient | Estimate | SE    | t-value | 95% CI        |
+| ----------- | -------- | ----- | ------- | ------------- |
+| (\beta_0)   | 0.333    | 0.624 | 0.53    | (-0.91, 1.58) |
+| (\beta_1)   | 1.5      | 0.289 | 5.20    | (0.92, 2.08)  |
+
+---
+
+### 🔁 Final Notes
+
+* **High t-value** (like for (\beta_1)) suggests strong evidence that the slope isn’t zero.
+* **Wider CI** → more uncertainty; **narrow CI** → more precise estimate.
+* Always estimate **error variance** using residuals to plug into SE formulas.
 
 ---
 
