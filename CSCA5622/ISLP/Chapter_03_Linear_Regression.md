@@ -27,161 +27,167 @@ This means each added year of experience adds $5,000 to the predicted salary. Th
 
 ## Section 3.1.1 - Estimating the Coefficients
 
-### 📘 Concept Introduction
+### 📘 Objective:
 
-In simple linear regression, we want to fit a straight line that best describes the relationship between `X` (predictor) and `Y` (response). The model is:
-
-[
-\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i
-]
-
-Our goal is to estimate the coefficients (\hat{\beta}_0) (intercept) and (\hat{\beta}_1) (slope).
+Estimate the best-fitting straight line ( \hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x ) for a set of data points using the **least squares** method.
 
 ---
 
-### 🧠 Mathematical Foundation
+### 🔧 Key Concepts
 
-We estimate the line using **Least Squares**, by minimizing the **Residual Sum of Squares (RSS)**:
+#### 1. **What is RSS?**
 
-[
-RSS = \sum_{i=1}^{n} (y_i - \hat{y}*i)^2 = \sum*{i=1}^{n} (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)^2
-]
-
-To minimize this, we take the **partial derivatives** of RSS with respect to each parameter, set them to zero, and solve.
-
-1. **Take derivative of RSS w.r.t.** (\hat{\beta}_0):
-   [
-   \frac{\partial RSS}{\partial \hat{\beta}_0} = -2 \sum (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)
-   ]
-
-2. **Take derivative w.r.t.** (\hat{\beta}_1):
-   [
-   \frac{\partial RSS}{\partial \hat{\beta}_1} = -2 \sum x_i (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i)
-   ]
-
-Set both equal to 0, solve the system, and derive the formulas:
-
-[
-\hat{\beta}_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}
-]
-
-[
-\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}
-]
-
-* Numerator = **Covariance** of X and Y
-* Denominator = **Variance** of X
+* **Residual**: ( e_i = y_i - \hat{y}_i ) is the error between the actual and predicted value.
+* **Residual Sum of Squares (RSS)**:
+  [
+  RSS = \sum_{i=1}^n (y_i - \hat{y}*i)^2 = \sum*{i=1}^n \left(y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i)\right)^2
+  ]
+* RSS is what we **minimize** to find the best line. This means finding the parameters ( \hat{\beta}_0 ) and ( \hat{\beta}_1 ) that make the total squared error as small as possible.
 
 ---
 
-### 💡 Intuitive Explanation
+#### 2. **Why Use Derivatives?**
 
-* The **slope** (\hat{\beta}_1) tells us how much Y changes on average for a one-unit increase in X.
-* The **intercept** (\hat{\beta}_0) is the predicted value of Y when X = 0.
-* We minimize RSS because it penalizes large prediction errors and gives us the "best fitting line".
-
----
-
-### 🧮 Practical Example
-
-Let's say:
-
-```python
-X = [1, 2, 3, 4, 5]
-Y = [1, 3, 3, 5, 7]
-```
-
-You'd calculate:
-
-1. Means:
-   (\bar{x} = 3), (\bar{y} = 3.8)
-
-2. Numerator (covariance):
-   (\sum (x_i - \bar{x})(y_i - \bar{y}) = 10)
-
-3. Denominator (variance):
-   (\sum (x_i - \bar{x})^2 = 10)
-
-4. Final coefficients:
-   (\hat{\beta}_1 = 1),
-   (\hat{\beta}_0 = 0.8)
-
-So the best-fit line is:
-
-[
-\hat{y} = 0.8 + 1 \cdot x
-]
+* A **derivative** tells us how a function changes — it's like asking: “if I nudge ( \beta_0 ) or ( \beta_1 ), how does RSS respond?”
+* We **take the derivative of RSS** with respect to ( \beta_0 ) and ( \beta_1 ), then **set those derivatives equal to 0** to find the **minimum point** of the RSS “valley”.
+* This gives us a **system of equations** whose solution yields the best estimates.
 
 ---
 
-### 🧪 Python Code Implementation (Manual)
+#### 3. **Final Closed-Form Coefficients**
+
+* **Slope**:
+  [
+  \hat\beta_1 = \frac{ \sum (x_i - \bar x)(y_i - \bar y) }{ \sum (x_i - \bar x)^2 }
+  ]
+  This is the **covariance of x and y** over the **variance of x**.
+* **Intercept**:
+  [
+  \hat\beta_0 = \bar y - \hat\beta_1 \bar x
+  ]
+  This ensures the line always passes through the mean point ((\bar x, \bar y)).
+
+---
+
+### 🧠 Important Clarifications
+
+* **Why is variance squared?**
+  It’s not. The denominator is already the squared deviation from the mean — the formula itself is the definition of variance, not its square.
+
+* **Why use the mean?**
+  It centers the data, helping the line balance positive and negative residuals.
+
+* **Why set the derivative = 0?**
+  That’s how we find **minimum RSS** — when the slope of the RSS function is zero, we’re at the bottom of the “valley”.
+
+* **What is ( n )?**
+  It’s the number of data points. It comes up when summing over all samples (e.g., in Equation A: ( \sum y_i = n \beta_0 + \beta_1 \sum x_i )).
+
+* **How does β₁ relate to β₀?**
+  You need β₁ to compute β₀, because ( \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x} )
+
+---
+
+### ✍️ Manual Python Implementation (No Libraries)
 
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data = {'x': [1, 2, 3, 4, 5], 'y': [1, 3, 3, 5, 7]}
+# Sample data
+data = {
+    "x": [1, 2, 3, 4, 5],
+    "y": [2, 4, 5, 4, 5]
+}
 df = pd.DataFrame(data)
 
-x_mean = df['x'].mean()
-y_mean = df['y'].mean()
+# Calculate means
+x = df["x"]
+y = df["y"]
+x_mean = x.mean()
+y_mean = y.mean()
 
-numerator = sum((df['x'] - x_mean) * (df['y'] - y_mean))
-denominator = sum((df['x'] - x_mean)**2)
-
+# Calculate slope (beta_1)
+numerator = sum((x - x_mean) * (y - y_mean))
+denominator = sum((x - x_mean)**2)
 beta_1 = numerator / denominator
+
+# Calculate intercept (beta_0)
 beta_0 = y_mean - beta_1 * x_mean
 
-df['y_hat'] = beta_0 + beta_1 * df['x']
+# Predict values
+df["y_hat"] = beta_0 + beta_1 * df["x"]
 
-plt.scatter(df['x'], df['y'], label='Data')
-plt.plot(df['x'], df['y_hat'], color='red', label='Regression Line')
+# Plot
+plt.scatter(df["x"], df["y"], color="blue", label="Actual")
+plt.plot(df["x"], df["y_hat"], color="red", label="Regression Line")
 plt.legend()
-plt.title('Simple Linear Regression')
+plt.title("Manual Linear Regression")
+plt.grid(True)
 plt.show()
 ```
 
 ---
 
-### 🤖 Python Code Implementation (Scikit-Learn)
+### 🤖 `scikit-learn` Implementation
 
 ```python
 from sklearn.linear_model import LinearRegression
-import numpy as np
 
-X = np.array(df['x']).reshape(-1, 1)  # must be 2D
-y = np.array(df['y'])
+# Step 1: Prepare inputs
+X = df[["x"]]  # 2D array (n samples x 1 feature)
+y = df["y"]    # 1D array (n samples)
 
+# Step 2: Create and train the model
 model = LinearRegression()
 model.fit(X, y)
 
-print("Slope (beta_1):", model.coef_[0])
-print("Intercept (beta_0):", model.intercept_)
+# Step 3: Get coefficients
+sk_beta_1 = model.coef_[0]
+sk_beta_0 = model.intercept_
 
-df['y_hat_sklearn'] = model.predict(X)
-
-plt.scatter(df['x'], df['y'], label='Data')
-plt.plot(df['x'], df['y_hat_sklearn'], color='green', label='Sklearn Line')
-plt.legend()
-plt.title('Sklearn Regression')
-plt.show()
+# Step 4: Predict
+df["y_hat_sklearn"] = model.predict(X)
 ```
 
 ---
 
-### ✅ Comprehension Recap & Key Answers
+### 🧠 Explanation of Each Line in Scikit-learn
 
-1. **Why minimize RSS?**
-   It gives the best-fitting line by penalizing large squared errors.
+* `df[["x"]]` keeps `X` as a 2D array → required because `sklearn` expects matrix-shaped input
+* `model.fit(X, y)` runs the least squares solution under the hood
+* `model.coef_` gives β₁ (the slope)
+* `model.intercept_` gives β₀ (the intercept)
+* `model.predict(X)` uses ( \hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x )
 
-2. **Why derivatives?**
-   They tell us how RSS changes as we tweak coefficients. Setting derivatives to 0 finds the minimum (bottom of the loss curve).
+---
 
-3. **Why is variance in denominator squared?**
-   It's not. The denominator is the **sum of squared deviations**, which defines variance.
+### 🧠 Your Questions Answered
 
-4. **Why is x 2D in sklearn?**
-   scikit-learn expects X to be a matrix (even if just one feature), hence shape `(n_samples, 1)`.
+**Q: Why does X need to be 2D?**
+A: Because `scikit-learn` is built for multi-feature datasets. Even with one feature, it expects the shape (n_samples, n_features) = (5, 1)
+
+**Q: Why does y not need to be 2D?**
+A: Because the target is always a single value per row — a 1D vector (shape = (n,)) is fine.
+
+**Q: What does model.fit do?**
+A: Internally computes β₀ and β₁ by minimizing RSS and stores them in the model.
+
+**Q: What do model.coef_ and model.intercept_ do?**
+A: They store and return the fitted slope (β₁) and intercept (β₀) respectively.
+
+---
+
+### ✅ Summary of Learned Skills
+
+You now know how to:
+
+* Define and interpret RSS
+* Derive β₀ and β₁ using calculus (least squares)
+* Implement linear regression from scratch in Python
+* Use `scikit-learn` for regression
+* Plot and interpret regression lines
+* Explain regression theory and code in your own words
 
 ---
 
