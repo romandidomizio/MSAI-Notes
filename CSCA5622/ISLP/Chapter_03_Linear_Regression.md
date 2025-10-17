@@ -759,31 +759,381 @@ Now that you understand model accuracy assessment, you're ready to:
 
 ---
 
-## Section 3.2 - Multiple Linear Regression
+## Section 3.2 – Multiple Linear Regression
 
-### 3.2.1 - Estimating the Regression Coefficients
+When we have more than one predictor variable, the simple linear regression model is too restrictive. Multiple linear regression lets us model the response \(Y\) as a linear function of several predictors \(X_1, X_2, \dots, X_p\).
 
-*[Content to be added]*
+### 3.2.1 Estimating the Regression Coefficients
 
-### 3.2.2 - Some Important Questions
+#### Model Definition
 
-*[Content to be added]*
+We assume the model:
+
+\[
+Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_p X_{ip} + \varepsilon_i
+\]
+
+- Here \(\varepsilon_i\) are error terms assumed to satisfy \(E[\varepsilon_i] = 0\), \(\mathrm{Var}(\varepsilon_i) = \sigma^2\), independence, etc.
+- Each \(\beta_j\) is interpreted as “the expected change in \(Y\) when \(X_j\) increases by 1 unit, *holding all other predictors constant*.”
+
+We choose \(\hat\beta_0, \hat\beta_1, \dots, \hat\beta_p\) to minimize the **Residual Sum of Squares (RSS)**:
+
+\[
+RSS = \sum_{i=1}^n \bigl( y_i - \hat\beta_0 - \hat\beta_1 x_{i1} - \cdots - \hat\beta_p x_{ip} \bigr)^2
+\]
+
+#### Matrix Form & Normal Equations
+
+Let:
+
+- \(X\) be the \(n \times (p + 1)\) **design matrix**, with first column all 1s (for the intercept) and subsequent columns the predictor values.
+- \(\boldsymbol{\beta} = [\beta_0, \beta_1, \dots, \beta_p]^T\)
+- \(\mathbf{y} = [y_1, \dots, y_n]^T\)
+
+Then the least squares solution is:
+
+\[
+\hat{\boldsymbol{\beta}} = (X^\top X)^{-1} X^\top \mathbf{y}
+\]
+
+provided \(X^\top X\) is invertible (i.e. predictors are not perfectly collinear).
+
+This generalizes the “normal equations” from simple regression to multiple predictors.
+
+### 3.2.2 Some Important Questions
+
+When applying multiple regression, there are several key statistical questions we must answer:
+
+#### Question 1: Is there a relationship between the response and predictors?
+
+This is a test of the null hypothesis:
+
+\[
+H_0: \beta_1 = \beta_2 = \cdots = \beta_p = 0
+\]
+
+versus the alternative that *at least one* \(\beta_j \neq 0\).
+
+We use the **F-statistic**:
+
+\[
+F = \frac{ (TSS - RSS) / p }{ RSS / (n - p - 1) }
+\]
+
+where
+
+\[
+TSS = \sum_{i=1}^n (y_i - \bar{y})^2
+\]
+
+If \(F\) is large, we reject \(H_0\), concluding that at least one predictor is useful.
+
+#### Question 2: Are all predictors useful?
+
+After rejecting the global null, we typically examine each coefficient \(\beta_j\) individually using a **t-test**:
+
+\[
+t_j = \frac{\hat{\beta}_j}{ SE(\hat{\beta}_j) }
+\]
+
+We compute \(SE(\hat{\beta}_j)\) from the variance-covariance matrix:
+
+\[
+\mathrm{Var}(\hat{\boldsymbol{\beta}}) = \sigma^2 (X^\top X)^{-1}
+\]
+
+Estimate \(\sigma^2\) by:
+
+\[
+\hat{\sigma}^2 = \frac{RSS}{n - p - 1}
+\]
+
+Then:
+
+\[
+SE(\hat{\beta}_j) = \sqrt{ \hat{\sigma}^2 \, [(X^\top X)^{-1}]_{jj} }
+\]
+
+We compare \(t_j\) to a \(t\)-distribution with \(n - p - 1\) degrees of freedom.
+
+#### Question 3: How well does the model fit?
+
+Use the **coefficient of determination**:
+
+\[
+R^2 = 1 - \frac{RSS}{TSS}
+\]
+
+- \(R^2\) measures the proportion of variance in \(y\) explained by predictors.
+- In simple regression, \(R^2 = r^2\) (the square of the correlation), but in multiple regression this direct equivalence breaks down. :contentReference[oaicite:0]{index=0}  
+- Because adding more predictors always reduces \(RSS\), \(R^2\) will never decrease when you add predictors—even if they are useless. That’s why we also consider **Adjusted \(R^2\)**:
+
+\[
+\text{Adjusted } R^2 = 1 - \frac{RSS/(n - p - 1)}{TSS/(n - 1)}
+\]
+
+Adjusted \(R^2\) imposes a penalty for adding predictors that do not sufficiently improve model fit.
+
+#### Question 4: How well can we predict new observations?
+
+Given a new predictor vector \(\mathbf{x}^* = [1, x_1^*, \dots, x_p^*]^\top\), the predicted response is:
+
+\[
+\hat{y}^* = \mathbf{x}^{*\top} \hat{\boldsymbol{\beta}} = \hat\beta_0 + \hat\beta_1 x_1^* + \dots + \hat\beta_p x_p^*
+\]
+
+We can form:
+
+- A **confidence interval** for the mean response at \(\mathbf{x}^*\)
+- A **prediction interval** for a future observed \(y^*\), which is wider because it includes irreducible error
+
+### 3.2.3 Properties & Inference
+
+Under standard assumptions (linearity, independence, homoscedasticity, no perfect multicollinearity):
+
+- \(\hat{\boldsymbol{\beta}}\) is **unbiased**: \(E[\hat{\beta}_j] = \beta_j\)
+- The variance-covariance matrix is \(\sigma^2 (X^\top X)^{-1}\)
+- Standard errors and hypothesis tests follow as above
+
+However, some complications arise:
+
+- **Multicollinearity**: predictors highly correlated with each other inflate variances of \(\hat{\beta}_j\), making individual coefficients unstable.
+- **High-leverage and influential points**: some observations may disproportionately affect model fit.
+- **Nonlinearity, heteroscedasticity, autocorrelation, outliers**: these violate model assumptions and distort inference. (See text’s “Potential Problems” section) :contentReference[oaicite:1]{index=1}
+
+### 3.2.4 Diagnostics, Model Selection, and Practical Concerns
+
+- **Residual plots** (residuals vs. fitted values) help detect patterns, non-constant variance, or non-linearity.
+- **Variance inflation factor (VIF)** is a diagnostic for multicollinearity.
+- **Model selection strategies** (in later chapters) include *forward selection*, *backward elimination*, and *mixed stepwise methods*.
+- **Overfitting risk**: as you add more variables, the model may start fitting noise rather than signal. Use cross-validation and validation sets.
+- Be cautious interpreting \(R^2\) alone; also inspect Adjusted \(R^2\), standard errors, and significance tests.
+
+### 📎 Python / Code Guidance (Scaffold, not full solution)
+
+```python
+import pandas as pd
+import statsmodels.api as sm
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Suppose df is your DataFrame with predictors x1, x2, …, xp and target y
+X = df[['x1', 'x2', 'x3']]    # (n × p) predictors
+X_with_const = sm.add_constant(X)  # adds intercept column
+y = df['y']
+
+# Using statsmodels for inference
+model = sm.OLS(y, X_with_const).fit()
+print(model.summary())  # provides coefficients, SEs, t-stats, p-values, R^2, F-stat
+
+# Using sklearn for prediction (no inference)
+lr = LinearRegression()
+lr.fit(X, y)
+coefs = lr.coef_
+intercept = lr.intercept_
+
+y_hat = lr.predict(X)
+residuals = y - y_hat
+RSS = np.sum(residuals**2)
+n, p = X.shape
+sigma2_hat = RSS / (n - p - 1)
+````
+
+You will want to understand:
+
+* What `model.summary()` reports (coefficients, SE, (t)-stats, p-values, (R^2), (F)-statistic)
+* The difference between sklearn (for prediction) and statsmodels (for statistical inference)
+* How to compute residuals, RSS, degrees of freedom, and (\hat\sigma^2)
 
 ---
 
-## Section 3.3 - Other Considerations in the Regression Model
+### ✅ Summary
 
-### 3.3.1 - Qualitative Predictors
+* Multiple regression extends simple regression to multiple predictors with conditional (ceteris paribus) interpretation of coefficients.
+* You estimate coefficients by minimizing RSS using the normal equation ( \hat\beta = (X^\top X)^{-1} X^\top y ).
+* Global model significance is tested via an (F)-test; individual coefficients via (t)-tests.
+* (R^2) measures model explanatory power, but **Adjusted (R^2)** accounts for model complexity.
+* Diagnostics are critical for reliability—watch out for multicollinearity, outliers, nonlinearity, heteroscedasticity.
 
-*[Content to be added]*
+---
 
-### 3.3.2 - Extensions of the Linear Model
+## Section 3.3 – Other Considerations in the Regression Model
 
-*[Content to be added]*
+When applying linear regression in practice, there are several real‑world issues and extensions we must consider. This section explores:
 
-### 3.3.3 - Potential Problems
+- Qualitative (categorical) predictors  
+- Extensions to relax standard linearity/additivity assumptions  
+- Potential problems and diagnostic concerns  
 
-*[Content to be added]*
+---
+
+### 3.3.1 Qualitative Predictors
+
+Not all predictors are numeric. Some are categorical (e.g. gender, region, color). To include these in a linear model, we use **indicator (dummy) variables**.
+
+#### Two-Level Qualitative Variables
+
+If a predictor \(Z\) has two levels (e.g. Male / Female), we encode:
+
+\[
+D_i = \begin{cases}
+1 & \text{if } Z_i = \text{Female} \\
+0 & \text{if } Z_i = \text{Male}
+\end{cases}
+\]
+
+Then include \(D_i\) as a predictor:
+
+\[
+Y_i = \beta_0 + \beta_1 D_i + \varepsilon_i
+\]
+
+Interpretation:
+
+- The intercept \(\beta_0\) is the mean outcome for the baseline category (Male, when \(D = 0\))
+- \(\beta_1\) is the difference between Female and Male
+
+If you instead coded 0 = Female and 1 = Male, the numeric values of \(\beta_0, \beta_1\) would change, but **predicted values** and **interpretations relative to baseline** remain consistent.
+
+#### Qualitative Predictors with More Than Two Levels
+
+If \(Z\) has \(K\) categories (e.g. 4 regions: North, South, East, West), you need \(K - 1\) dummy variables:
+
+\[
+D_{i1}, D_{i2}, \dots, D_{i, K-1}
+\]
+
+One category is left as the reference (baseline). For example, if baseline is “North”:
+
+- \(D_{i1} = 1\) if “South”, 0 otherwise  
+- \(D_{i2} = 1\) if “East”, 0 otherwise  
+- \(D_{i3} = 1\) if “West”, 0 otherwise  
+
+Then:
+
+\[
+Y_i = \beta_0 + \beta_1 D_{i1} + \beta_2 D_{i2} + \beta_3 D_{i3} + \varepsilon_i
+\]
+
+Interpretation:
+
+- \(\beta_1\) = difference (South vs North); \(\beta_2\) = (East vs North); etc.
+- Always omit one dummy to avoid **perfect multicollinearity** (dummy trap).
+
+---
+
+### 3.3.2 Extensions of the Linear Model
+
+Linear models as originally formulated assume two restrictive assumptions:
+
+1. **Additivity**: the effect of each predictor is independent (no interactions)  
+2. **Linearity**: each predictor has a linear effect on \(Y\), i.e. one unit change in \(X\) changes \(Y\) by a constant amount
+
+To relax these, we can incorporate:
+
+#### Interaction Terms (Removing Additive Assumption)
+
+Two variables may **interact** so that the effect of one depends on the level of another.
+
+For two predictors \(X_1\) and \(X_2\):
+
+\[
+Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \beta_3 (X_{i1} \cdot X_{i2}) + \varepsilon_i
+\]
+
+Here \(\beta_3\) captures the **interaction effect**.
+
+- The marginal effect of \(X_1\) on \(Y\) becomes \(\beta_1 + \beta_3 X_2\). It depends on \(X_2\).  
+- By the **hierarchical principle**, if you include the interaction term, you should include the main (lower-order) terms \(X_1\) and \(X_2\) even if they are not statistically significant on their own.
+
+You can also interact **qualitative and quantitative** variables:
+
+\[
+Y_i = \beta_0 + \beta_1 X + \beta_2 D + \beta_3 (X \cdot D) + \varepsilon_i
+\]
+
+Interpretation: effect of \(X\) may differ by group defined by \(D\).
+
+#### Polynomial Terms & Nonlinear Transformations
+
+To relax the linearity assumption, include nonlinear terms of predictors (while keeping linearity in parameters). For example:
+
+\[
+Y_i = \beta_0 + \beta_1 X_i + \beta_2 X_i^2 + \beta_3 X_i^3 + \varepsilon_i
+\]
+
+This is still a linear model in \(\beta\)s, but captures curvature.
+
+Alternatively, you can transform predictors (e.g. \(\log X\), \(\sqrt X\)) or use basis expansions (splines, piecewise polynomials) in advanced topics.
+
+#### Summary of Extensions
+
+- **Interactions**: allow one predictor’s effect to depend on another  
+- **Polynomial / nonlinear terms**: allow curvature  
+- **Combining categorical & continuous**: via interaction of dummy × numeric  
+- Always check interpretable meaning: marginal effects become context‑dependent
+
+---
+
+### 3.3.3 Potential Problems and Diagnostics
+
+Even with extensions, linear models may suffer from issues. This section describes common problems and how to detect/fix them.
+
+| Problem | Description | Diagnostics / Remedies |
+|---|---|---|
+| **Nonlinearity** | True relationship is not linear | Residual plots vs fitted values; include polynomial or transform variables |
+| **Heteroscedasticity** | Residual variance increases or decreases with predictors | Residual vs fitted plot shows “funnel” shape; use weighted least squares or transform response |
+| **Correlated Errors (Autocorrelation)** | Residuals not independent, e.g. time series data | Durbin–Watson test, autocorrelation plots; use time-series models (ARIMA) |
+| **Outliers** | Observations with large error | Examine studentized residuals, Cook’s distance; consider removing or modeling separately |
+| **High Leverage / Influential Points** | Observations far in predictor space that have undue influence | Leverage values, influence measures; inspect and possibly drop or model separately |
+| **Multicollinearity** | Predictors highly correlated with each other | Variance Inflation Factor (VIF), condition indices; drop or combine variables, use regularization (ridge / lasso) |
+
+A few additional notes:
+
+- **Residual plots**: In multiple regression, residuals are often plotted against fitted values \(\hat{y}_i\) rather than a single \(X\) because there are many predictors.
+- **Transformations**: e.g. \(\log Y\) or \(\sqrt Y\) are common when variance of errors grows with level of \(Y\).
+- **Outlier impact**: Just because an outlier is extreme does not mean it should be removed — it may reflect an interesting regime or anomaly.
+- **Multicollinearity’s effect**: It inflates standard errors, making coefficients less reliable even if \(R^2\) is high.
+
+---
+
+### 📎 Example Sketch with Extensions (Code Guidance)
+
+```python
+import pandas as pd
+import statsmodels.api as sm
+import numpy as np
+
+# Suppose df with numerical predictors x1, x2, and categorical D (0/1)
+X = df[['x1', 'x2']]
+D = df['D']
+X['interaction'] = X['x1'] * X['x2']         # numeric × numeric
+X['x1_D'] = X['x1'] * D                       # numeric × dummy interaction
+X['x2_D'] = X['x2'] * D                       # numeric × dummy interaction
+X['x1_sq'] = X['x1']**2                       # polynomial term
+
+Xc = sm.add_constant(X)
+model = sm.OLS(df['y'], Xc).fit()
+print(model.summary())
+````
+
+In this setup:
+
+* `interaction` captures (x_1 \times x_2)
+* `x1_D` and `x2_D` capture how slopes differ by group
+* `x1_sq` adds quadratic term to model curvature
+
+The `model.summary()` output will include coefficients, standard errors, p-values, (R^2), F-statistic, etc.
+
+---
+
+### ✅ Summary & Study Tips (for 3.3.2 Focus)
+
+* Extensions allow flexibility beyond additive and linear assumptions.
+* **Interactions** provide conditional effects among predictors.
+* **Polynomials and transforms** let you model curvature while retaining interpretability.
+* Always check diagnostics to validate assumptions.
+* Don’t over-interpret coefficients when interactions or nonlinear terms are included — interpret marginal effects.
 
 ---
 
