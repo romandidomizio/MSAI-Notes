@@ -1,5 +1,5 @@
 ---
-trigger: manual
+trigger: always_on
 ---
 
 # Persistent Instruction and Behavior Rules for Windsurf AI
